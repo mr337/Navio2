@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
     // If there's at least one correct message in the first 300 symbols the test is passed
     if(gps.testConnection())
     {
-        printf("Ublox test OK\n");
+        //printf("Ublox test OK\n");
 
         // gps.decodeMessages();
         // You can use this function to decode all messages, incoming from the GPS receiver. The function starts an infinite loop.
@@ -60,13 +60,13 @@ int main(int argc, char *argv[]){
                 // after desired message is successfully decoded, we can use the information stored in pos_data vector
                 // right here, or we can do something with it from inside decodeSingleMessage() function(see ublox.h).
                 // the way, data is stored in pos_data vector is specified in decodeMessage() function of class UBXParser(see ublox.h)
-                printf("GPS Millisecond Time of Week: %.0lf s\n", pos_data[0]/1000);
-                printf("Longitude: %lf\n", pos_data[1]/10000000);
-                printf("Latitude: %lf\n", pos_data[2]/10000000);
-                printf("Height above Ellipsoid: %.3lf m\n", pos_data[3]/1000);
-                printf("Height above mean sea level: %.3lf m\n", pos_data[4]/1000);
-                printf("Horizontal Accuracy Estateimate: %.3lf m\n", pos_data[5]/1000);
-                printf("Vertical Accuracy Estateimate: %.3lf m\n", pos_data[6]/1000);
+                printf("SOLU TOW %.0lf\n", pos_data[0]/1000);
+                printf("SOLU Longitude %lf\n", pos_data[1]/10000000);
+                printf("SOLU Latitude %lf\n", pos_data[2]/10000000);
+                printf("SOLU Height_Ellipsoid %.3lf\n", pos_data[3]/1000);
+                printf("SOLU Height_Sea %.3lf\n", pos_data[4]/1000);
+                printf("SOLU Horizontal_Accuracy %.3lf\n", pos_data[5]/1000);
+                printf("SOLU Vertical_Accuracy %.3lf\n", pos_data[6]/1000);
 
             } else {
                 // printf("Message not captured\n");
@@ -77,42 +77,39 @@ int main(int argc, char *argv[]){
 
             if (gps.decodeSingleMessage(Ublox::NAV_STATUS, pos_data) == 1)
             {
-                printf("Current GPS status:\n");
-                printf("gpsFixOk: %d\n", ((int)pos_data[1] & 0x01));
+                printf("GNSS Fix %d\n", ((int)pos_data[1] & 0x01));
 
-                printf("gps Fix status: ");
+                printf("GNSS Status ");
                 switch((int)pos_data[0]){
                     case 0x00:
-                        printf("no fix\n");
+                        printf("NOFIX\n");
                         break;
 
                     case 0x01:
-                        printf("dead reckoning only\n");
+                        printf("DEADRECKONING\n");
                         break;
 
                     case 0x02:
-                        printf("2D-fix\n");
+                        printf("2DFIX\n");
                         break;
 
                     case 0x03:
-                        printf("3D-fix\n");
+                        printf("3DFIX\n");
                         break;
 
                     case 0x04:
-                        printf("GPS + dead reckoning combined\n");
+                        printf("GPSDRC\n");
                         break;
 
                     case 0x05:
-                        printf("Time only fix\n");
+                        printf("TIMEONLY\n");
                         break;
 
                     default:
-                        printf("Reserved value. Current state unknown\n");
+                        printf("UNKNOWN\n");
                         break;
 
                 }
-
-                printf("\n");
 
             } else {
                 // printf("Status Message not captured\n");
